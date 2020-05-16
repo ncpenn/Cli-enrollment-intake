@@ -12,10 +12,9 @@ namespace EnrollmentIntake.CsvReader
 
         static void Main(string[] args)
         {
-            //var csvPath = args[0];
+            var csvPath = args[0];
             var recordHandler = RecordHandler.Create();
             recordHandler.RecordReceivedEvent += PublishToConsole;
-            var csvPath = "/Users/pennington/test.csv";
 
             if (!FileHandler.IsValidFile(csvPath))
             {
