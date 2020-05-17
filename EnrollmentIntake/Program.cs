@@ -25,8 +25,7 @@ namespace EnrollmentIntake.CsvReader
 
         static void Main(string[] args)
         {
-            //var csvPath = args[0];
-            var csvPath = "/Users/pennington/test.csv";
+            var csvPath = args[0];
 
             if (!fileHandler.IsValidFile(csvPath, CSV_EXTENTION))
             {
