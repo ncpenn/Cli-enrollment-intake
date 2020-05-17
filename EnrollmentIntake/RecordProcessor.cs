@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using EnrollmentIntake.Interfaces;
 using EnrollmentIntake.Models;
 
@@ -6,6 +8,9 @@ namespace EnrollmentIntake
 {
     public class RecordProcessor<TUnprocessed, TProcessed> where TProcessed : TUnprocessed, IProcessedRecord, new()
     {
+        private readonly PropertyInfo[] propertiesOfProcessed = typeof(TProcessed).GetProperties();
+        private readonly List<PropertyInfo> propertiesOfUnprocessed = typeof(TUnprocessed).GetProperties().ToList();
+
         private readonly IRules<TUnprocessed> rules;
 
         public delegate void RecordProcessed(TProcessed record);
@@ -27,14 +32,12 @@ namespace EnrollmentIntake
                 RecordStatus = status
             };
 
-            var propertiesOfProcessed = typeof(TProcessed).GetProperties();
-
-            foreach (var propInfo in typeof(TUnprocessed).GetProperties())
+            propertiesOfUnprocessed.ForEach(propInfo =>
             {
-                propertiesOfProcessed
-                    .First(p => p.Name.Equals(propInfo.Name))
-                    .SetValue(processed, propInfo.GetValue(record));
-            }
+                this.propertiesOfProcessed
+                   .First(p => p.Name.Equals(propInfo.Name))
+                   .SetValue(processed, propInfo.GetValue(record));
+            });
 
             RecordReceivedEvent?.Invoke(processed);
 
