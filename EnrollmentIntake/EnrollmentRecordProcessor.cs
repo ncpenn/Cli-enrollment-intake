@@ -29,7 +29,15 @@ namespace EnrollmentIntake
                 ? EnrollmentStatus.Accepted
                 : EnrollmentStatus.Rejected;
 
-            var processedRecord = new ProcessedEnrollmentRecord(record, enrollmentStatus);
+            var processedRecord = new ProcessedEnrollmentRecord
+            {
+                EnrollmentStatus = enrollmentStatus,
+                DOB = record.DOB,
+                EffectiveDate = record.EffectiveDate,
+                FirstName = record.FirstName,
+                LastName = record.LastName,
+                PlanType = record.PlanType
+            };
 
             RecordReceivedEvent?.Invoke(processedRecord);
 

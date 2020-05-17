@@ -51,11 +51,11 @@ namespace EnrollmentIntake.CsvReader
         {
             var sb = new StringBuilder();
             sb.Append($"{processesRecord.EnrollmentStatus},");
-            sb.Append($"{processesRecord.EnrollmentRecord.FirstName},");
-            sb.Append($"{processesRecord.EnrollmentRecord.LastName},");
-            sb.Append($"{processesRecord.EnrollmentRecord.DOB.ToShortDateString()},");
-            sb.Append($"{processesRecord.EnrollmentRecord.PlanType},");
-            sb.Append($"{processesRecord.EnrollmentRecord.EffectiveDate.ToShortDateString()}");
+            sb.Append($"{processesRecord.FirstName},");
+            sb.Append($"{processesRecord.LastName},");
+            sb.Append($"{processesRecord.DOB.ToShortDateString()},");
+            sb.Append($"{processesRecord.PlanType},");
+            sb.Append($"{processesRecord.EffectiveDate.ToShortDateString()}");
 
             Console.WriteLine(sb.ToString());
         }
