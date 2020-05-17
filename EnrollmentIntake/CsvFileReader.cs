@@ -8,23 +8,23 @@ using EnrollmentIntake.Models;
 
 namespace EnrollmentIntake
 {
-    public class EnrollmentRecordFileHandler<T, U> : IFileHandler<T, U> where U : ClassMap<T>
+    public class CsvFileReader<TUnprocessedRecord, TRecordClassMap> : IFileHandler<TUnprocessedRecord, TRecordClassMap> where TRecordClassMap : ClassMap<TUnprocessedRecord>
     {
-        public RecordResults<T> ExtractRecordsFromFile(string filePath)
+        public RecordResults<TUnprocessedRecord> ExtractRecordsFromFile(string filePath)
         {
             using (var fileHanlde = new StreamReader(filePath))
             using (var csv = new CsvHelper.CsvReader(fileHanlde, CultureInfo.InvariantCulture))
             {
                 csv.Configuration.HasHeaderRecord = false;
-                csv.Configuration.RegisterClassMap<U>();
+                csv.Configuration.RegisterClassMap<TRecordClassMap>();
 
                 try
                 {
-                    return new RecordResults<T>(csv.GetRecords<T>().ToList());
+                    return new RecordResults<TUnprocessedRecord>(csv.GetRecords<TUnprocessedRecord>().ToList());
                 }
                 catch (Exception ex)
                 {
-                    return new RecordResults<T>(null, ex.Message);
+                    return new RecordResults<TUnprocessedRecord>(null, ex.Message);
                 }
             }
         }

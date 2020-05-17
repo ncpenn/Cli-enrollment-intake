@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace EnrollmentIntake.Models
+namespace EnrollmentIntake.Models.Enrollment
 {
     public class EnrollmentRecord
     {

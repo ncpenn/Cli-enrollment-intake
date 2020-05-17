@@ -1,30 +1,17 @@
 ﻿using System;
 using EnrollmentIntake.Interfaces;
+using EnrollmentIntake.Models.Enrollment;
 
 namespace EnrollmentIntake.Rules
 {
-    public class EnrollmentDateRules : IRules
+    public class EnrollmentDateRules : IRules<EnrollmentRecord>
     {
-        private DateTime dob;
-        private DateTime effectiveDate;
-        private Func<DateTime, bool> dobFunc = (dob) => dob.AddYears(18) < DateTime.Now;
-        private Func<DateTime, bool> effectiveDateFunc = (e) => DateTime.Now.AddDays(30) >= e;
+        private readonly Func<DateTime, bool> dobFunc = (dob) => dob.AddYears(18) < DateTime.Now;
+        private readonly Func<DateTime, bool> effectiveDateFunc = (e) => DateTime.Now.AddDays(30) >= e;
 
-        public bool Do()
+        public bool Do(EnrollmentRecord item)
         {
-            return dobFunc(dob) && effectiveDateFunc(effectiveDate);
-        }
-
-        public EnrollmentDateRules WithDOB(DateTime dateTime)
-        {
-            this.dob = dateTime;
-            return this;
-        }
-
-        public EnrollmentDateRules WithEffectiveDate(DateTime dateTime)
-        {
-            this.effectiveDate = dateTime;
-            return this;
+            return dobFunc(item.DOB) && effectiveDateFunc(item.EffectiveDate);
         }
     }
 }

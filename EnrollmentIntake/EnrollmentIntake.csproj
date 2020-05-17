@@ -12,5 +12,6 @@
     <Folder Include="Models\" />
     <Folder Include="Interfaces\" />
     <Folder Include="Rules\" />
+    <Folder Include="Models\Enrollment\" />
   </ItemGroup>
 </Project>

@@ -1,6 +1,6 @@
 ﻿namespace EnrollmentIntake.Models
 {
-    public enum EnrollmentStatus
+    public enum Status
     {
         Accepted,
         Rejected

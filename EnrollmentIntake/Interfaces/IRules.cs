@@ -1,7 +1,7 @@
 ﻿namespace EnrollmentIntake.Interfaces
 {
-    public interface IRules
+    public interface IRules<TModel>
     {
-        bool Do();
+        bool Do(TModel item);
     }
 }

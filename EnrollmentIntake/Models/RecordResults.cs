@@ -2,15 +2,15 @@
 
 namespace EnrollmentIntake.Models
 {
-    public class RecordResults<T>
+    public class RecordResults<TUnprocessedRecord>
     {
-        public RecordResults(IEnumerable<T> records, string errorMessage = null)
+        public RecordResults(IEnumerable<TUnprocessedRecord> records, string errorMessage = null)
         {
-            this.Records = records as IReadOnlyCollection<T>;
+            this.Records = records as IReadOnlyCollection<TUnprocessedRecord>;
             ErrorMessage = errorMessage;
         }
 
-        public IReadOnlyCollection<T> Records { get; }
+        public IReadOnlyCollection<TUnprocessedRecord> Records { get; }
 
         public string ErrorMessage { get; }
 

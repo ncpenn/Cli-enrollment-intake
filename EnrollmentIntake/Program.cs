@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using EnrollmentIntake.Interfaces;
-using EnrollmentIntake.Models;
+using EnrollmentIntake.Models.Enrollment;
 using EnrollmentIntake.Rules;
 
 namespace EnrollmentIntake.CsvReader
@@ -14,12 +14,13 @@ namespace EnrollmentIntake.CsvReader
 
         private static IEnumerable<ProcessedEnrollmentRecord> processedRecords;
         private static readonly IFileHandler<EnrollmentRecord, EnrollmentRecordMap> fileHandler;
-        private static readonly EnrollmentRecordProcessor recordHandler;
+        private static readonly RecordProcessor<EnrollmentRecord, ProcessedEnrollmentRecord> recordHandler;
 
         static Program()
         {
-            fileHandler = new EnrollmentRecordFileHandler<EnrollmentRecord, EnrollmentRecordMap>();
-            recordHandler = EnrollmentRecordProcessor.Create(new EnrollmentDateRules());
+            IRules<EnrollmentRecord> rules = new EnrollmentDateRules();
+            fileHandler = new CsvFileReader<EnrollmentRecord, EnrollmentRecordMap>();
+            recordHandler = new RecordProcessor<EnrollmentRecord, ProcessedEnrollmentRecord>(rules);
             recordHandler.RecordReceivedEvent += PublishToConsole;
         }
 
@@ -49,7 +50,7 @@ namespace EnrollmentIntake.CsvReader
         private static void PublishToConsole(ProcessedEnrollmentRecord processesRecord)
         {
             var sb = new StringBuilder();
-            sb.Append($"{processesRecord.EnrollmentStatus},");
+            sb.Append($"{processesRecord.RecordStatus},");
             sb.Append($"{processesRecord.FirstName},");
             sb.Append($"{processesRecord.LastName},");
             sb.Append($"{processesRecord.DOB.ToShortDateString()},");

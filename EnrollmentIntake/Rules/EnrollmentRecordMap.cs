@@ -2,6 +2,7 @@
 using System.Globalization;
 using CsvHelper.Configuration;
 using EnrollmentIntake.Models;
+using EnrollmentIntake.Models.Enrollment;
 
 namespace EnrollmentIntake.Rules
 {
