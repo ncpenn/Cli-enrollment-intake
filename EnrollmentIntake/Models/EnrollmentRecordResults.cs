@@ -2,15 +2,15 @@
 
 namespace EnrollmentIntake.Models
 {
-    public class EnrollmentRecordResults
+    public class RecordResults<T>
     {
-        public EnrollmentRecordResults(IEnumerable<EnrollmentRecord> enrollmentRecords, string errorMessage = null)
+        public RecordResults(IEnumerable<T> records, string errorMessage = null)
         {
-            EnrollmentRecords = enrollmentRecords as IReadOnlyCollection<EnrollmentRecord>;
+            this.Records = records as IReadOnlyCollection<T>;
             ErrorMessage = errorMessage;
         }
 
-        public IReadOnlyCollection<EnrollmentRecord> EnrollmentRecords { get; }
+        public IReadOnlyCollection<T> Records { get; }
 
         public string ErrorMessage { get; }
 

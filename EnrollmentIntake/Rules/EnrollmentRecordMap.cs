@@ -3,7 +3,7 @@ using System.Globalization;
 using CsvHelper.Configuration;
 using EnrollmentIntake.Models;
 
-namespace EnrollmentIntake
+namespace EnrollmentIntake.Rules
 {
     public class EnrollmentRecordMap : ClassMap<EnrollmentRecord>
     {

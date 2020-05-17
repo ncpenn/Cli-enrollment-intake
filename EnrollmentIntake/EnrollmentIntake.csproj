@@ -10,5 +10,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
+    <Folder Include="Interfaces\" />
+    <Folder Include="Rules\" />
   </ItemGroup>
 </Project>
