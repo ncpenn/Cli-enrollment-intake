@@ -1,107 +1,148 @@
+using System;
 using EnrollmentIntake.Interfaces;
 using EnrollmentIntake.Models;
+using EnrollmentIntake.Models.Enrollment;
+using EnrollmentIntake.Rules;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
 namespace EnrollmentIntake.Tests
 {
     [TestClass]
-    public class RecordProcessorTest
+    public class EnrollmentDateRulesTests
     {
-        private Mock<IRules<UnprocessedModel>> rulesMock;
-
-        public RecordProcessorTest()
-        {
-            rulesMock = new Mock<IRules<UnprocessedModel>>();
-        }
-
         [TestMethod]
-        public void ProcessRecord_Maps_Processed_Record()
+        public void Do_DOB_Nineteen_Years_Ago_And_EffectiveDate_Now_Returns_True()
         {
             //Arrange
-            var unprocessed = new UnprocessedModel
+            var model = new EnrollmentRecord
             {
-                Str = "twinkle, twinkle little bat",
-                Number = 42
+                DOB = DateTime.Now.AddYears(-19),
+                EffectiveDate = DateTime.Now
             };
 
-            rulesMock.Setup(x => x.Do(It.IsAny<UnprocessedModel>())).Returns(true);
-            var sut = new RecordProcessor<UnprocessedModel, ProcessedModel>(rulesMock.Object);
+            var sut = new EnrollmentDateRules();
 
             //Act
-            var result = sut.ProcessRecord(unprocessed);
+            var result = sut.Do(model);
 
             //Assert
-            Assert.AreEqual(unprocessed.Number, result.Number);
-            Assert.AreEqual(unprocessed.Str, result.Str);
+            Assert.IsTrue(result);
         }
 
         [TestMethod]
-        public void ProcessRecord_Rules_False_Gives_Status_Rejected()
+        public void Do_DOB_Eighteen_Years_Ago_And_EffectiveDate_Now_Returns_True()
         {
             //Arrange
-            var unprocessed = new UnprocessedModel();
-
-            rulesMock.Setup(x => x.Do(It.IsAny<UnprocessedModel>())).Returns(false);
-            var sut = new RecordProcessor<UnprocessedModel, ProcessedModel>(rulesMock.Object);
-
-            //Act
-            var result = sut.ProcessRecord(unprocessed);
-
-            //Assert
-            Assert.AreEqual(Status.Rejected, result.RecordStatus);
-        }
-
-        [TestMethod]
-        public void ProcessRecord_Rules_True_Gives_Status_Accepted()
-        {
-            //Arrange
-            var unprocessed = new UnprocessedModel();
-
-            rulesMock.Setup(x => x.Do(It.IsAny<UnprocessedModel>())).Returns(true);
-            var sut = new RecordProcessor<UnprocessedModel, ProcessedModel>(rulesMock.Object);
-
-            //Act
-            var result = sut.ProcessRecord(unprocessed);
-
-            //Assert
-            Assert.AreEqual(Status.Accepted, result.RecordStatus);
-        }
-
-        [TestMethod]
-        public void ProcessRecord_Event_Is_Raised_With_Processed_Model()
-        {
-            //Arrange
-            ProcessedModel processed = null;
-
-            var unprocessed = new UnprocessedModel
+            var model = new EnrollmentRecord
             {
-                Str = "A long time ago, in a galaxy far, far away",
-                Number = 0.01
+                DOB = DateTime.Now.AddYears(-18),
+                EffectiveDate = DateTime.Now
             };
 
-            rulesMock.Setup(x => x.Do(It.IsAny<UnprocessedModel>())).Returns(true);
-            var sut = new RecordProcessor<UnprocessedModel, ProcessedModel>(rulesMock.Object);
-            sut.RecordReceivedEvent += (model) => processed = model;
+            var sut = new EnrollmentDateRules();
 
             //Act
-            sut.ProcessRecord(unprocessed);
+            var result = sut.Do(model);
 
             //Assert
-            Assert.AreEqual(Status.Accepted, processed.RecordStatus);
-            Assert.AreEqual(unprocessed.Number, processed.Number);
-            Assert.AreEqual(unprocessed.Str, processed.Str);
+            Assert.IsTrue(result);
         }
-    }
 
-    public class UnprocessedModel
-    {
-        public string Str { get; set; }
-        public double Number { get; set; }
-    }
+        [TestMethod]
+        public void Do_DOB_Seventeen_Years_Ago_And_EffectiveDate_Now_Returns_False()
+        {
+            //Arrange
+            var model = new EnrollmentRecord
+            {
+                DOB = DateTime.Now.AddYears(-17),
+                EffectiveDate = DateTime.Now
+            };
 
-    public class ProcessedModel : UnprocessedModel, IProcessedRecord
-    {
-        public Status RecordStatus { get; set; }
+            var sut = new EnrollmentDateRules();
+
+            //Act
+            var result = sut.Do(model);
+
+            //Assert
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void Do_DOB_Eighteen_Years_In_The_Future_And_EffectiveDate_Now_Returns_False()
+        {
+            //Arrange
+            var model = new EnrollmentRecord
+            {
+                DOB = DateTime.Now.AddYears(18),
+                EffectiveDate = DateTime.Now
+            };
+
+            var sut = new EnrollmentDateRules();
+
+            //Act
+            var result = sut.Do(model);
+
+            //Assert
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void Do_DOB_Twenty_Years_Ago_And_EffectiveDate_One_Hundred_Years_Ago_Returns_True()
+        {
+            //Arrange
+            var model = new EnrollmentRecord
+            {
+                DOB = DateTime.Now.AddYears(-20),
+                EffectiveDate = DateTime.Now.AddYears(-100)
+            };
+
+            var sut = new EnrollmentDateRules();
+
+            //Act
+            var result = sut.Do(model);
+
+            //Assert
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void Do_DOB_Twenty_Years_Ago_And_EffectiveDate_Thirty_Days_In_Future_Returns_True()
+        {
+            //Arrange
+            var model = new EnrollmentRecord
+            {
+                DOB = DateTime.Now.AddYears(-20),
+                EffectiveDate = DateTime.Now.AddDays(30)
+            };
+
+            var sut = new EnrollmentDateRules();
+
+            //Act
+            var result = sut.Do(model);
+
+            //Assert
+            Assert.IsTrue(result);
+        }
+
+
+        [TestMethod]
+        public void Do_DOB_Twenty_Years_Ago_And_EffectiveDate_Thirty_One_Days_In_Future_Returns_False()
+        {
+            //Arrange
+            var model = new EnrollmentRecord
+            {
+                DOB = DateTime.Now.AddYears(-20),
+                EffectiveDate = DateTime.Now.AddDays(31)
+            };
+
+            var sut = new EnrollmentDateRules();
+
+            //Act
+            var result = sut.Do(model);
+
+            //Assert
+            Assert.IsFalse(result);
+        }
     }
 }
